@@ -1,0 +1,23 @@
+name: Daily Contribution
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  update-contribution:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Make a commit
+        run: |
+          echo "Daily update: $(date)" >> log.txt
+          git config user.email "action@github.com"
+          git config user.name "GitHub Actions"
+          git add log.txt
+          git commit -m "chore: daily contribution" || echo "No changes to commit"
+          git push
