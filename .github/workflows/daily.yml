@@ -19,7 +19,7 @@ jobs:
         with:
           persist-credentials: true
 
-      # Small random delay (0–90 minutes)
+      # Random delay (0–2 hours) to look natural
       - name: Random delay
         run: |
           echo "Sleeping for random delay..."
@@ -28,9 +28,11 @@ jobs:
       - name: Make daily commit (IST)
         run: |
           export TZ="Asia/Kolkata"
-          echo "Daily update (IST): $(date)" >> log.txt
-          git config user.email "action@github.com"
-          git config user.name "GitHub Actions"
+          echo "Daily update: $(date)" >> log.txt
+
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
           git add log.txt
-          git commit -m "chore: daily contribution" || echo "No changes"
+          git commit -m "chore: daily contribution"
           git push
