@@ -1,38 +1,40 @@
 name: Daily Contribution
 
 permissions:
-  contents: write
+  contents: write   # Required to let GITHUB_TOKEN push commits
 
 on:
   schedule:
-    # Runs daily at 07:00 UTC → 12:30 PM IST (safe zone)
+    # 07:00 UTC = ~12:30 PM IST — good safe time
     - cron: '0 7 * * *'
-  workflow_dispatch:
+  workflow_dispatch:   # Lets you trigger manually from the Actions tab if you want
 
 jobs:
   auto-contribute:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4   # ← Updated to latest version (v4 is current in 2026)
         with:
-          persist-credentials: true
+          # No need for persist-credentials: true anymore in v4 — it handles auth better internally
 
-      # Random delay (0–2 hours) to look natural
-      - name: Random delay
+      - name: Random delay (0–2 hours) to look more natural
+        run: sleep $((RANDOM % 7200 + 1))   # +1 avoids exactly 0 sec
+
+      - name: Make daily commit (in IST timezone)
         run: |
-          echo "Sleeping for random delay..."
-          sleep $((RANDOM % 7200))
+          # Set timezone so date shows IST correctly in commit message
+          export TZ=Asia/Kolkata
 
-      - name: Make daily commit (IST)
-        run: |
-          export TZ="Asia/Kolkata"
-          echo "Daily update: $(date)" >> log.txt
+          # Append a line with current IST time — keeps file changing
+          echo "Daily auto update: $(date '+%Y-%m-%d %H:%M:%S %Z')" >> log.txt
 
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          git config user.name "NABORAJ SARAKR"
+          git config user.email "nishant.ns.business@gmail.com"
 
           git add log.txt
-          git commit -m "chore: daily contribution"
-          git push
+          # Only commit if there are changes (prevents empty commit errors)
+          git diff --staged --quiet || git commit -m "chore: daily contribution $(date '+%Y-%m-%d')"
+
+          # Push — GITHUB_TOKEN has write permission from the permissions: block
+          git push origin HEAD
