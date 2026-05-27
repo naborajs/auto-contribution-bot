@@ -5,8 +5,12 @@ permissions:
 
 on:
   schedule:
-    # 07:00 UTC = 12:30 PM IST
+    # Primary run → 12:30 PM IST
     - cron: '0 7 * * *'
+
+    # Backup run → 8:30 PM IST
+    - cron: '0 15 * * *'
+
   workflow_dispatch:
 
 jobs:
@@ -17,10 +21,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Random delay (0–2 hours)
-        run: sleep $((RANDOM % 7200))
+      - name: Small random delay
+        run: sleep $((RANDOM % 1800))
 
-      - name: Make daily commit (IST)
+      - name: Setup Git
+        run: |
+          git config --global user.name "NABORAJ SARKAR"
+          git config --global user.email "nishant.ns.business@gmail.com"
+
+      - name: Pull latest changes
+        run: git pull origin main --rebase
+
+      - name: Create daily log
         run: |
           export TZ=Asia/Kolkata
 
@@ -32,12 +44,28 @@ jobs:
           NOTES=("Daily update" "Routine maintenance" "System check" "Minor changes" "Log refresh")
           NOTE=${NOTES[$RANDOM % ${#NOTES[@]}]}
 
+          # Prevent duplicate commits on same day
+          if grep -q "$DATE" log.txt; then
+            echo "Today's entry already exists."
+            exit 0
+          fi
+
           printf "%-10s | %-9s | %-11s | Week %-2s | %s\n" \
           "$DATE" "$DAY" "$TIME" "$WEEK" "$NOTE" >> log.txt
 
-          git config --global user.name "NABORAJ SARKAR"
-          git config --global user.email "nishant.ns.business@gmail.com"
-
+      - name: Commit changes
+        run: |
           git add log.txt
-          git diff --staged --quiet || git commit -m "chore: daily log ($DATE)"
-          git push
+
+          git diff --staged --quiet || git commit -m "chore: daily log"
+
+      - name: Push with retry
+        run: |
+          for i in 1 2 3; do
+            git push && break
+
+            echo "Push failed. Retrying in 10 seconds..."
+            sleep 10
+
+            git pull origin main --rebase
+          done
