@@ -9,14 +9,21 @@
 
 ## 🔥 What This Bot Does
 
-Auto Contribution Bot is a lightweight GitHub Actions-powered tool that automatically creates **one safe, natural-looking contribution every day** to keep your GitHub graph green and your streak alive. Perfect for busy devs and gamers who want consistency without the grind.
+Auto Contribution Bot is a lightweight GitHub Actions automation system that safely maintains your GitHub contribution streak with realistic, low-frequency daily commits.
 
-- ✅ Runs daily on autopilot
-- 🎲 Random delay (0–2 hours) for a human-like touch
-- 🟢 Builds real green squares (using your email)
-- ⚙️ Zero ongoing effort after setup
-- 🔐 Uses built-in GITHUB_TOKEN—no extra tokens needed
+Designed for developers, students, creators, and gamers who value consistency, the bot automatically updates a log file using scheduled GitHub workflows while keeping activity natural and reliable.
 
+### ✨ Features
+
+- ✅ Fully automated daily GitHub contributions
+- 🔁 Built-in fallback schedule for streak protection
+- 🛡️ Retry logic for failed pushes
+- 🎲 Randomized execution delay for human-like timing
+- 🧠 Duplicate protection (prevents multiple commits/day)
+- 🌍 IST timezone support (`Asia/Kolkata`)
+- 🔐 Uses secure built-in `GITHUB_TOKEN`
+- ⚡ Zero maintenance after setup
+- 📈 Helps maintain contribution consistency naturally
 ---
 
 ## 🧠 How It Works (Technical Breakdown)
@@ -27,8 +34,25 @@ Auto Contribution Bot is a lightweight GitHub Actions-powered tool that automati
 4. Appends a timestamped line to `log.txt` (in IST timezone).
 5. Commits and pushes using your details for authentic contributions.
 
-The limited delay ensures no skips, and it only commits if there's a real change—bulletproof and efficient.
+The workflow includes fallback scheduling and retry protection to reduce the chances of missed contribution days.
 
+---
+---
+
+## 🛡️ Reliability System
+
+This bot is designed with streak protection in mind.
+
+### Protection Features
+- Dual scheduled runs daily
+- Automatic push retries
+- Remote sync before push
+- Duplicate-day detection
+- Randomized timing patterns
+
+### Why This Matters
+GitHub Actions scheduled workflows can occasionally delay or skip runs during platform load spikes.  
+The fallback system helps ensure your contribution streak survives temporary scheduler failures.
 ---
 
 ## 📁 Project Structure
@@ -110,10 +134,15 @@ Push the file to `main`. Boom—the bot's live!
 ---
 
 ## ⏰ Timing Details
-- **Trigger:** 07:00 UTC (≈ 12:30 PM IST).
-- **Actual Commit:** Random within 0–2 hours after.
-- **Why IST?** Tailored for devs in India like us in Siliguri—keeps it daytime fresh.
 
+### Primary Run
+- 07:00 UTC → 12:30 PM IST
+
+### Backup Run
+- 15:00 UTC → 8:30 PM IST
+
+### Commit Timing
+A randomized delay makes execution feel more natural while still remaining reliable.
 ---
 
 ## ⚠️ Warnings & Ethics
@@ -149,4 +178,4 @@ Student • Developer • Gamer • Content Creator from Siliguri, West Bengal, 
 ---
 
 ## 🔍 SEO Keywords
-GitHub automation, auto contribution bot, GitHub Actions daily commit, developer productivity tools, coding streak maintainer, natural GitHub contributions, automation for devs, GitHub portfolio booster, NS GAMMiNG projects, Naboraj Sarkar developer, Nishant Sarkar GitHub.
+GitHub automation, auto contribution bot, GitHub Actions daily commit, developer productivity tools, coding streak maintainer, natural GitHub contributions, automation for devs, NS CODEX projects, Naboraj Sarkar developer, Nishant Sarkar GitHub, developer consistency tool.
