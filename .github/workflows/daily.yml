@@ -5,9 +5,8 @@ contents: write
 
 on:
 schedule:
-- cron: '0 6 * * *'
-- cron: '0 12 * * *'
-- cron: '0 18 * * *'
+# Runs every 6 hours so GitHub has multiple chances
+- cron: '0 */6 * * *'
 
 workflow_dispatch:
 
@@ -17,17 +16,18 @@ runs-on: ubuntu-latest
 
 ```
 steps:
-  - name: Checkout repository
+  - name: Checkout
     uses: actions/checkout@v4
-    with:
-      fetch-depth: 0
+
+  - name: Random delay (0-6 hours)
+    run: sleep $((RANDOM % 21600))
 
   - name: Configure Git
     run: |
-      git config user.name "NABORAJ SARKAR"
-      git config user.email "nishant.ns.business@gmail.com"
+      git config --global user.name "NABORAJ SARKAR"
+      git config --global user.email "nishant.ns.business@gmail.com"
 
-  - name: Create daily file
+  - name: Create contribution
     run: |
       export TZ=Asia/Kolkata
 
@@ -36,19 +36,14 @@ steps:
       DATE=$(date +%F)
       TIME=$(date +"%H:%M:%S")
 
-      echo "Contribution: $DATE $TIME" > logs/$DATE.txt
+      echo "$DATE $TIME $RANDOM" > logs/today.txt
 
-  - name: Commit changes
+  - name: Commit
     run: |
-      git add logs/
+      git add .
+      git commit -m "chore: daily contribution $(date +%F)" || exit 0
 
-      git commit -m "chore: daily contribution $(date +%F)" || echo "No changes to commit"
-
-  - name: Pull latest changes
+  - name: Push
     run: |
-      git pull origin main --rebase || true
-
-  - name: Push changes
-    run: |
-      git push origin main
+      git push
 ```
