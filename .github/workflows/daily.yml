@@ -12,7 +12,6 @@ jobs:
 contribute:
 runs-on: ubuntu-latest
 
-```
 steps:
   - name: Checkout
     uses: actions/checkout@v4
@@ -39,7 +38,6 @@ steps:
       git add .
       git commit -m "chore: daily contribution" || echo "No changes"
 
-  - name: Push changes
+  - name: Push changes  
     run: |
       git push
-```
