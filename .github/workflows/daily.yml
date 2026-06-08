@@ -5,9 +5,7 @@ contents: write
 
 on:
 schedule:
-# Runs every 6 hours so GitHub has multiple chances
 - cron: '0 */6 * * *'
-
 workflow_dispatch:
 
 jobs:
@@ -19,8 +17,9 @@ steps:
   - name: Checkout
     uses: actions/checkout@v4
 
-  - name: Random delay (0-6 hours)
-    run: sleep $((RANDOM % 21600))
+  - name: Random delay
+    run: |
+      sleep $((RANDOM % 21600))
 
   - name: Configure Git
     run: |
@@ -30,20 +29,17 @@ steps:
   - name: Create contribution
     run: |
       export TZ=Asia/Kolkata
-
       mkdir -p logs
-
       DATE=$(date +%F)
       TIME=$(date +"%H:%M:%S")
-
       echo "$DATE $TIME $RANDOM" > logs/today.txt
 
-  - name: Commit
+  - name: Commit changes
     run: |
       git add .
-      git commit -m "chore: daily contribution $(date +%F)" || exit 0
+      git commit -m "chore: daily contribution" || echo "No changes"
 
-  - name: Push
+  - name: Push changes
     run: |
       git push
 ```
