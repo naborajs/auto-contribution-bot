@@ -1,43 +1,45 @@
 name: Daily Contribution
 
 permissions:
-contents: write
+  contents: write
 
 on:
-schedule:
-- cron: '0 */6 * * *'
-workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
-contribute:
-runs-on: ubuntu-latest
+  contribute:
+    runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  - name: Random delay
-    run: |
-      sleep $((RANDOM % 21600))
+      - name: Random delay
+        run: |
+          sleep $((RANDOM % 21600))
 
-  - name: Configure Git
-    run: |
-      git config --global user.name "NABORAJ SARKAR"
-      git config --global user.email "nishant.ns.business@gmail.com"
+      - name: Configure Git
+        run: |
+          git config --global user.name "NABORAJ SARKAR"
+          git config --global user.email "nishant.ns.business@gmail.com"
 
-  - name: Create contribution
-    run: |
-      export TZ=Asia/Kolkata
-      mkdir -p logs
-      DATE=$(date +%F)
-      TIME=$(date +"%H:%M:%S")
-      echo "$DATE $TIME $RANDOM" > logs/today.txt
+      - name: Create contribution file
+        run: |
+          export TZ=Asia/Kolkata
+          mkdir -p logs
 
-  - name: Commit changes
-    run: |
-      git add .
-      git commit -m "chore: daily contribution" || echo "No changes"
+          DATE=$(date +%F)
+          TIME=$(date +"%H:%M:%S")
 
-  - name: Push changes  
-    run: |
-      git push
+          echo "Contribution on $DATE at $TIME - $RANDOM" > logs/today.txt
+
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "chore: daily contribution" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push
