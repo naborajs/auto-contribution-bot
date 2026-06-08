@@ -5,72 +5,50 @@ contents: write
 
 on:
 schedule:
-# 11:30 AM IST
 - cron: '0 6 * * *'
-
-```
-# 2:30 PM IST
-- cron: '0 9 * * *'
-
-# 5:30 PM IST
 - cron: '0 12 * * *'
-
-# 8:30 PM IST
-- cron: '0 15 * * *'
-```
+- cron: '0 18 * * *'
 
 workflow_dispatch:
 
 jobs:
-auto-contribute:
+contribute:
 runs-on: ubuntu-latest
 
 ```
 steps:
   - name: Checkout repository
     uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
 
-  - name: Setup Git
+  - name: Configure Git
     run: |
-      git config --global user.name "NABORAJ SARKAR"
-      git config --global user.email "nishant.ns.business@gmail.com"
+      git config user.name "NABORAJ SARKAR"
+      git config user.email "nishant.ns.business@gmail.com"
 
-  - name: Pull latest changes
-    run: git pull origin main --rebase
-
-  - name: Create daily contribution
+  - name: Create daily file
     run: |
       export TZ=Asia/Kolkata
 
-      DATE=$(date +%F)
-      TIME=$(date +"%H:%M:%S IST")
-
       mkdir -p logs
 
-      FILE="logs/${DATE}.txt"
+      DATE=$(date +%F)
+      TIME=$(date +"%H:%M:%S")
 
-      if [ ! -f "$FILE" ]; then
-        echo "Contribution created on $DATE at $TIME" > "$FILE"
-      else
-        echo "Already contributed today."
-        exit 0
-      fi
+      echo "Contribution: $DATE $TIME" > logs/$DATE.txt
 
   - name: Commit changes
     run: |
-      git add .
+      git add logs/
 
-      git diff --staged --quiet || \
-      git commit -m "chore: daily contribution $(date +%F)"
+      git commit -m "chore: daily contribution $(date +%F)" || echo "No changes to commit"
 
-  - name: Push with retry
+  - name: Pull latest changes
     run: |
-      for i in 1 2 3; do
-        git push && break
+      git pull origin main --rebase || true
 
-        echo "Push failed. Retrying..."
-        sleep 10
-
-        git pull origin main --rebase
-      done
+  - name: Push changes
+    run: |
+      git push origin main
 ```
